@@ -1,4 +1,4 @@
-"""Minimal inline candlestick chart — no external dependencies."""
+"Minimal inline candlestick chart — no external dependencies."
 
 class MiniChart {
   constructor(containerId) {
