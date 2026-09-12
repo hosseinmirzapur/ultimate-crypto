@@ -1,0 +1,35 @@
+# Exchange configurations
+exchanges:
+  - name: kucoin
+    enabled: true
+    api_key: ${KUCOIN_API_KEY}
+    api_secret: ${KUCOIN_API_SECRET}
+    api_passphrase: ${KUCOIN_API_PASSPHRASE}
+    ws_url: wss://ws-api.kucoin.com
+    rest_url: https://api.kucoin.com
+    symbols:
+      - BTC-USDT-PERP
+      - ETH-USDT-PERP
+      - SOL-USDT-PERP
+
+  - name: toobit
+    enabled: true
+    api_key: ${TOOBIT_API_KEY}
+    api_secret: ${TOOBIT_API_SECRET}
+    ws_url: wss://streamapi.toobit.com
+    rest_url: https://api.toobit.com
+    symbols:
+      - BTCUSDT
+      - ETHUSDT
+      - SOLUSDT
+
+  - name: wallex
+    enabled: true
+    api_key: ${WALLEX_API_KEY}
+    api_secret: ${WALLEX_API_SECRET}
+    ws_url: wss://api.wallex.ir/ws
+    rest_url: https://api.wallex.ir
+    symbols:
+      - BTCUSDT
+      - ETHUSDT
+      - USDTTMN

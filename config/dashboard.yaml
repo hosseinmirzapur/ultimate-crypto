@@ -1,0 +1,3 @@
+dashboard:
+  refresh_ms: 1000
+  default_view: home

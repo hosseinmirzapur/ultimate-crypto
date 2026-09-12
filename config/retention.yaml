@@ -1,0 +1,4 @@
+retention:
+  market_data_days: 90
+  news_days: 30
+  signals_days: 30
