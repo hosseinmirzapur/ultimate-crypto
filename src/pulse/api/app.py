@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import logging
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi.responses import FileResponse
@@ -14,6 +15,8 @@ from pulse.core.events import EventBus
 
 logger = logging.getLogger(__name__)
 event_bus = EventBus()
+
+DASHBOARD_DIR = Path(__file__).resolve().parent.parent / "dashboard" / "static"
 
 
 @asynccontextmanager
@@ -36,5 +39,11 @@ def create_app() -> FastAPI:
     @app.get("/health")
     async def health() -> dict[str, str]:
         return {"status": "ok"}
+
+    @app.get("/")
+    async def serve_dashboard() -> FileResponse:
+        return FileResponse(DASHBOARD_DIR / "index.html")
+
+    app.mount("/static", StaticFiles(directory=DASHBOARD_DIR), name="dashboard-static")
 
     return app

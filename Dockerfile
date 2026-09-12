@@ -9,7 +9,7 @@ RUN uv sync --no-dev
 FROM python:3.12-slim AS runtime
 WORKDIR /app
 COPY --from=builder /app/.venv /app/.venv
-ENV PATH="/app/.venv/bin:$PATH"
+ENV PATH="/app/.venv/bin:$PATH" PYTHONPATH=/app/src
 COPY src/ ./src/
 COPY config/ ./config/
 EXPOSE 8000

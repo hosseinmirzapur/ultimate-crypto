@@ -50,8 +50,8 @@ def load_config(config_path: str | None = None) -> Settings:
         for ex in exchanges_raw.get("exchanges", []):
             exchange_configs.append(ExchangeConfig(**ex))
 
-    retention_cfg = RetentionConfig(**(retention_raw or {}))
-    dashboard_cfg = dashboard_raw or {}
+    retention_cfg = RetentionConfig(**(retention_raw.get("retention", {}) if retention_raw else {}))
+    dashboard_cfg = dashboard_raw.get("dashboard", {}) if dashboard_raw else {}
 
     env_overrides: dict[str, Any] = {}
     if os.getenv("PULSE_DATA_RETENTION_DAYS"):
