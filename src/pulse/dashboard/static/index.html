@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pulse — Market Dashboard</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-left">
+      <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">&#9776;</button>
+      <div class="logo">Pulse</div>
+    </div>
+    <div class="topbar-center">
+      <div class="connection-status" id="connectionStatus">
+        <span class="status-dot disconnected"></span>
+        <span class="status-text">Connecting...</span>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <span class="last-update" id="lastUpdate">--</span>
+    </div>
+  </header>
+
+  <aside class="sidebar" id="sidebar">
+    <nav class="nav">
+      <a href="#" class="nav-item active" data-view="home">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        <span>Home</span>
+      </a>
+      <a href="#" class="nav-item" data-view="markets">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        <span>Markets</span>
+      </a>
+      <a href="#" class="nav-item" data-view="signals">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        <span>Signals</span>
+      </a>
+      <a href="#" class="nav-item" data-view="backtest">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <span>Backtest</span>
+      </a>
+      <a href="#" class="nav-item" data-view="news">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 11a9 9 0 019 9M4 4a16 16 0 0116 16"/><circle cx="5" cy="19" r="1"/></svg>
+        <span>News</span>
+      </a>
+      <a href="#" class="nav-item" data-view="settings">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+        <span>Settings</span>
+      </a>
+    </nav>
+  </aside>
+
+  <main class="main" id="main">
+    <!-- Home View -->
+    <section class="view active" id="view-home">
+      <div class="view-header">
+        <h1>Overview</h1>
+        <p class="subtitle">Live market snapshot across all venues</p>
+      </div>
+      <div class="cards-grid" id="homeCards">
+        <div class="card skeleton">
+          <div class="card-symbol">Loading...</div>
+          <div class="card-price">--</div>
+          <div class="card-change">--</div>
+          <div class="card-exchange">--</div>
+        </div>
+      </div>
+      <div class="section">
+        <h2>Active Signals</h2>
+        <div class="signals-list" id="homeSignals">
+          <div class="empty-state">No active signals</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Markets View -->
+    <section class="view" id="view-markets">
+      <div class="view-header">
+        <h1>Markets</h1>
+        <p class="subtitle">All symbols across exchanges</p>
+      </div>
+      <div class="chart-panel" id="chartPanel" style="display:none; margin-bottom: 24px;">
+        <div class="chart-header">
+          <div>
+            <h3 id="chartSymbol">BTC-USDT-PERP</h3>
+            <span id="chartExchange" class="exchange-badge">KuCoin</span>
+          </div>
+          <button class="btn-secondary" id="closeChart">Close</button>
+        </div>
+        <div class="chart-container" id="chartContainer"></div>
+      </div>
+      <div class="table-wrapper">
+        <table class="data-table" id="marketsTable">
+          <thead>
+            <tr>
+              <th data-sort="symbol">Symbol</th>
+              <th data-sort="exchange">Exchange</th>
+              <th data-sort="price">Price</th>
+              <th data-sort="change">24h Change</th>
+              <th data-sort="volume">24h Volume</th>
+              <th data-sort="spread">Spread</th>
+            </tr>
+          </thead>
+          <tbody id="marketsBody">
+            <tr><td colspan="6" class="empty-row">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Signals View -->
+    <section class="view" id="view-signals">
+      <div class="view-header">
+        <h1>Signals</h1>
+        <p class="subtitle">Strategy-generated opportunities</p>
+      </div>
+      <div class="signals-grid" id="signalsGrid">
+        <div class="empty-state">No signals yet. Connect exchanges to start.</div>
+      </div>
+    </section>
+
+    <!-- Backtest View -->
+    <section class="view" id="view-backtest">
+      <div class="view-header">
+        <h1>Backtest</h1>
+        <p class="subtitle">Run strategy against historical data</p>
+      </div>
+      <form class="backtest-form" id="backtestForm">
+        <div class="form-group">
+          <label for="btSymbol">Symbol</label>
+          <input type="text" id="btSymbol" placeholder="BTC-USDT-PERP" required>
+        </div>
+        <div class="form-group">
+          <label for="btExchange">Exchange</label>
+          <select id="btExchange">
+            <option value="kucoin">KuCoin</option>
+            <option value="toobit">Toobit</option>
+            <option value="wallex">Wallex</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="btStrategy">Strategy</label>
+          <select id="btStrategy">
+            <option value="basis_arb">Basis Arbitrage</option>
+            <option value="funding_arb">Funding Arbitrage</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="btStart">Start Date</label>
+          <input type="date" id="btStart" required>
+        </div>
+        <div class="form-group">
+          <label for="btEnd">End Date</label>
+          <input type="date" id="btEnd" required>
+        </div>
+        <div class="form-group">
+          <label for="btCapital">Initial Capital (USD)</label>
+          <input type="number" id="btCapital" value="100000" min="1000">
+        </div>
+        <div class="form-group">
+          <label for="btFillModel">Fill Model</label>
+          <select id="btFillModel">
+            <option value="realistic">Realistic (slippage)</option>
+            <option value="perfect">Perfect Fill</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="btSlippage">Slippage (bps)</label>
+          <input type="number" id="btSlippage" value="10" min="0" max="100">
+        </div>
+        <button type="submit" class="btn-primary" id="runBacktest">Run Backtest</button>
+      </form>
+      <div class="backtest-results" id="backtestResults" style="display:none">
+        <h2>Results</h2>
+        <div class="metrics-grid" id="metricsGrid"></div>
+      </div>
+    </section>
+
+    <!-- News View -->
+    <section class="view" id="view-news">
+      <div class="view-header">
+        <h1>News</h1>
+        <p class="subtitle">Iranian + global crypto news</p>
+      </div>
+      <div class="news-filters">
+        <button class="filter-btn active" data-source="all">All</button>
+        <button class="filter-btn" data-source="arzdigital">Arzdigital</button>
+        <button class="filter-btn" data-source="tgju">TGJU</button>
+        <button class="filter-btn" data-source="bertina">Bertina</button>
+        <button class="filter-btn" data-source="bitycle">Bitycle</button>
+      </div>
+      <div class="news-list" id="newsList">
+        <div class="empty-state">No news yet. News providers are being initialized.</div>
+      </div>
+    </section>
+
+    <!-- Settings View -->
+    <section class="view" id="view-settings">
+      <div class="view-header">
+        <h1>Settings</h1>
+        <p class="subtitle">Configure exchanges, retention, and display</p>
+      </div>
+      <div class="settings-section">
+        <h2>Exchanges</h2>
+        <div class="exchange-list" id="exchangeList"></div>
+      </div>
+      <div class="settings-section">
+        <h2>Data Retention</h2>
+        <div class="form-group">
+          <label for="retentionDays">Market Data Retention (days)</label>
+          <input type="number" id="retentionDays" value="90" min="7" max="365">
+          <button class="btn-secondary" id="saveRetention">Save</button>
+        </div>
+      </div>
+      <div class="settings-section">
+        <h2>Dashboard</h2>
+        <div class="form-group">
+          <label for="refreshRate">Refresh Rate (ms)</label>
+          <input type="number" id="refreshRate" value="1000" min="500" max="10000" step="500">
+          <button class="btn-secondary" id="saveRefresh">Save</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script src="/static/charts.js"></script>
+  <script src="/static/app.js"></script>
+</body>
+</html>
